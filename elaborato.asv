@@ -13,19 +13,19 @@ C = 15;
 dimPattern=100;
 x=1;
 y=1;
-for i=1: dimPattern/10
+for i=1: dimPattern
     %x=randi(N - C,1); %numero tra 1..N-C
     %y=randi(M - C,1); %numero tra 1..M-C
-    for j=1: dimPattern/10
+    for j=1: dimPattern
       y=ceil(y+(M-C)/10);
-        if(x+R<N && y+C<M) %cntrollo che non esca il quadratino
-            pattern{i}{j}.img=A(x:x+R-1, y:y+C-1);
-            pattern{i}{j}.basex=x;
-            pattern{i}{j}.basey=y;
-            pattern{i}{j}.endx=x+R-1;
-            pattern{i}{j}.endy=y+C-1;
-            pattern{i}{j}.dimx=R;
-            pattern{i}{j}.dimy=C;
+        if(x+R<N && y+C<M)
+            pattern{i}.img=A(x:x+R-1, y:y+C-1);
+            pattern{i}.basex=x;
+            pattern{i}.basey=y;
+            pattern{i}.endx=x+R-1;
+            pattern{i}.endy=y+C-1;
+            pattern{i}.dimx=R;
+            pattern{i}.dimy=C;
         end
     end
     x=ceil(x+(N-C)/10);
