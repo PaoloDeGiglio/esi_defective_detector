@@ -17,16 +17,17 @@ for i=1: dimPattern/10
     %x=randi(N - C,1); %numero tra 1..N-C
     %y=randi(M - C,1); %numero tra 1..M-C
     for j=1: dimPattern/10
-      y=ceil(y+(M-C)/10);
+        y=ceil(y+(M-C)/10);
         if(x+R<N && y+C<M) %cntrollo che non esca il quadratino
-            pattern{i}{j}.img=A(x:x+R-1, y:y+C-1);
-            pattern{i}{j}.basex=x;
-            pattern{i}{j}.basey=y;
-            pattern{i}{j}.endx=x+R-1;
-            pattern{i}{j}.endy=y+C-1;
-            pattern{i}{j}.dimx=R;
-            pattern{i}{j}.dimy=C;
+            element.img=A(x:x+R-1, y:y+C-1);
+            element.basex=x;
+            element.basey=y;
+            element.endx=x+R-1;
+            element.endy=y+C-1;
+            element.dimx=R;
+            element.dimy=C;
         end
+        pattern(i,j) = element;
     end
     x=ceil(x+(N-C)/10);
 end
@@ -39,14 +40,15 @@ title ('Tessitura e pattern sovrapposti')
  
 %stampo i pattern sull'immagine
 for(i=1:dimPattern)
-    rectangle('position',[pattern{i}.basex,pattern{i}.basey,pattern{i}.dimx,pattern{i}.dimy],'EdgeColor','r');  
+    disp(pattern(i));
+    rectangle('position',[pattern(i).basex,pattern(i).basey,pattern(i).dimx,pattern(i).dimy],'EdgeColor','r');  
 end
 
 % Calcolo per ogni pattern la cross-correlazione 2D (normalizzata). Attenzione all'ordine delle variabili in input! 
 % L'output avra' dimensione (M+R-1,N+C-1)
 sumC=zeros(M+R-1,N+C-1);
 for i=1:dimPattern
-    correlazione{i}=normxcorr2(pattern{i}.img,A);
+    correlazione{i}=normxcorr2(pattern(i).img,A);
     sumC=sumC+correlazione{i};  %sommo tutte le correlazioni 
 end
 
@@ -106,4 +108,3 @@ Af = cat(3,A1,A,A);
 figure;
 imshowpair(A,Af,'montage')
 title ('Immagine e Difetto finale')
-
