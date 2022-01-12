@@ -7,30 +7,45 @@ clc
 A = rgb2gray(imread('images/tex.jpg'));
 [M,N] = size(A);
 
-% Definisco una serie di pattern, tutti quadrati 14x14
+% Dimensione dei miei quadratini
 R = 15;
 C = 15; 
-dimPattern=100;
+
+%incidici di partenza dei miei quadratini
 x=1;
 y=1;
-for i=1: dimPattern/10
-    %x=randi(N - C,1); %numero tra 1..N-C
-    %y=randi(M - C,1); %numero tra 1..M-C
-    for j=1: dimPattern/10
-        y=ceil(y+(M-C)/10);
-        if(x+R<N && y+C<M) %cntrollo che non esca il quadratino
-            element.img=A(x:x+R-1, y:y+C-1);
-            element.basex=x;
-            element.basey=y;
-            element.endx=x+R-1;
-            element.endy=y+C-1;
-            element.dimx=R;
-            element.dimy=C;
-        end
-        pattern(i,j) = element;
+
+dimPattern=0;
+i=1;
+incX=ceil((N-R)/(ceil((N/R))/2)); %Lunghezza riga / numero quadratini per ogni riga/2
+incY=ceil((M-C)/(ceil((M/C))/2));
+while (y+C<N)   %controllo di non uscire dall'ultima riga
+    if(x+R<N) %controllo se devo cambiare riga
+            pattern{i}.img=A(x:x+R-1, y:y+C-1);
+            pattern{i}.basex=x;
+            pattern{i}.basey=y;
+            pattern{i}.endx=x+R-1;
+            pattern{i}.endy=y+C-1;
+            pattern{i}.dimx=R;
+            pattern{i}.dimy=C;
+            x=x+incX; %sposto a dx il quadratino di un valore fisso 
+       else
+            x=1;
+            y=y+incY; %abbasso il quadratino di un valore fisso
+            if(y+C<M)   %se non esco allora mi salvo il quadratino
+                pattern{i}.img=A(x:x+R-1, y:y+C-1);
+                pattern{i}.basex=x;
+                pattern{i}.basey=y;
+                pattern{i}.endx=x+R-1;
+                pattern{i}.endy=y+C-1;
+                pattern{i}.dimx=R;
+                pattern{i}.dimy=C;
+            end
     end
-    x=ceil(x+(N-C)/10);
+        dimPattern=dimPattern+1;
+        i=i+1;
 end
+dimPattern=dimPattern-1; %sistemo contatore
 
 % Visualizzo i pattern sovrapposti all'immagine di partenza (convertita in
 % scala di grigi)
@@ -39,16 +54,15 @@ imagesc(A); axis image; colormap gray; hold on;
 title ('Tessitura e pattern sovrapposti')
  
 %stampo i pattern sull'immagine
-for(i=1:dimPattern)
-    disp(pattern(i));
-    rectangle('position',[pattern(i).basex,pattern(i).basey,pattern(i).dimx,pattern(i).dimy],'EdgeColor','r');  
+for i=1:dimPattern
+    rectangle('position',[pattern{i}.basex,pattern{i}.basey,pattern{i}.dimx,pattern{i}.dimy],'EdgeColor','r');  
 end
 
 % Calcolo per ogni pattern la cross-correlazione 2D (normalizzata). Attenzione all'ordine delle variabili in input! 
 % L'output avra' dimensione (M+R-1,N+C-1)
 sumC=zeros(M+R-1,N+C-1);
 for i=1:dimPattern
-    correlazione{i}=normxcorr2(pattern(i).img,A);
+    correlazione{i}=normxcorr2(pattern{i}.img,A);
     sumC=sumC+correlazione{i};  %sommo tutte le correlazioni 
 end
 

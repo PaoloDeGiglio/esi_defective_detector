@@ -7,18 +7,22 @@ clc
 A = rgb2gray(imread('images/tex.jpg'));
 [M,N] = size(A);
 
-% Definisco una serie di pattern, tutti quadrati 14x14
-R = 15;
-C = 15; 
-dimPattern=100;
+% Dimensione dei miei quadratini
+R = 20;
+C = 20; 
+
+%incidici di partenza dei miei quadratini
 x=1;
 y=1;
-for i=1: dimPattern
-    %x=randi(N - C,1); %numero tra 1..N-C
-    %y=randi(M - C,1); %numero tra 1..M-C
-    for j=1: dimPattern
-      y=ceil(y+(M-C)/10);
-        if(x+R<N && y+C<M)
+
+numQuadratiX=ceil((N/R))/2; %faccio un quadratino si e uno no
+numQuadratiY=ceil((M/C))/2;
+incX=R*2;
+incY=C*2;
+dimPattern=numQuadratiX*numQuadratiY;   %numero dei miei campioni
+
+for i=1: dimPattern   %ripeto finchè non riempo la griglia
+        if(mod(i,numQuadratiX)!) %controllo che non esca il quadratino dalla riga
             pattern{i}.img=A(x:x+R-1, y:y+C-1);
             pattern{i}.basex=x;
             pattern{i}.basey=y;
@@ -26,10 +30,22 @@ for i=1: dimPattern
             pattern{i}.endy=y+C-1;
             pattern{i}.dimx=R;
             pattern{i}.dimy=C;
+            x=x+incX; %sposto a dx il quadratino di un valore fisso (dato dalla lunghezza della riga / lunghezza quadrato)
+        else
+            x=1;
+            y=y+incY; %abbasso il quadratino di un valore fisso
+            if(y+C<M)   %se non esco allora mi salvo il quadratino
+                pattern{i}.img=A(x:x+R-1, y:y+C-1);
+                pattern{i}.basex=x;
+                pattern{i}.basey=y;
+                pattern{i}.endx=x+R-1;
+                pattern{i}.endy=y+C-1;
+                pattern{i}.dimx=R;
+                pattern{i}.dimy=C;
+            end
         end
-    end
-    x=ceil(x+(N-C)/10);
-end
+ end
+
 
 % Visualizzo i pattern sovrapposti all'immagine di partenza (convertita in
 % scala di grigi)
@@ -38,7 +54,7 @@ imagesc(A); axis image; colormap gray; hold on;
 title ('Tessitura e pattern sovrapposti')
  
 %stampo i pattern sull'immagine
-for(i=1:dimPattern)
+for i=1:dimPattern
     rectangle('position',[pattern{i}.basex,pattern{i}.basey,pattern{i}.dimx,pattern{i}.dimy],'EdgeColor','r');  
 end
 
@@ -106,4 +122,3 @@ Af = cat(3,A1,A,A);
 figure;
 imshowpair(A,Af,'montage')
 title ('Immagine e Difetto finale')
-
