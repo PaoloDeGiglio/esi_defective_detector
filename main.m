@@ -1,23 +1,26 @@
+function main(ORIG,arg2,numberFigure)
 %% Esercizio 2 - Cross-correlazione 2D normalizzata per trovare difetti su tessuti
-clear all
-close all
-clc
+
 
 % Carico immagine e la converto in scala di grigi
-ORIG = rgb2gray(imread('images/img-30.jpg'));
+
+A=ORIG;
 A = highpassfilter(ORIG, 40);
+
 
 [M,N] = size(A);
 R= 15;
 C = 15;
 
-[pattern,dimPattern]=patternsetting(ORIG,R,C)
+%[pattern,dimPattern]=patternordered(ORIG,R,C)
+[pattern,dimPattern]=patternrandom(ORIG,R,C,arg2)
 
 % Visualizzo i pattern sovrapposti all'immagine di partenza (convertita in
 % scala di grigi)
-
-subplot(4,4,1);
-imagesc(A); axis image; colormap gray; hold on;
+fh = figure(numberFigure);
+fh.WindowState = 'maximized';
+subplot(2,3,1);
+imagesc(A); axis image; colormap default; hold on;
 title ('Tessitura e pattern sovrapposti')
 
 %stampo i pattern sull'immagine
@@ -44,11 +47,10 @@ cMedia=sumC/dimPattern;
 % Hint: matrice_xcorr_reduced = matrice_xcorr(r:(end-r+1),c:(end-c+1));
 cMedia = cMedia(R:end-R+1,C:end-C+1); % 499x499
 
-% Visualizzo, in un subplot con due riquadri, il valore assoluto della
 % cross-correlazione appena stimata sia come surface plot che come immagine
-hold on;subplot(121), surf(abs(cMedia)), shading flat
+subplot(2,3,2), surf(abs(cMedia)), shading flat
 title ('Xcorr2D - Surface Plot')
-hold on;subplot(122), imagesc(abs(cMedia)), axis 'image', colorbar
+subplot(2,3,3), imagesc(abs(cMedia)), axis 'image', colorbar
 title ('Xcorr2D - Immagine')
 
 % Faccio il modulo della cross-correlazione appena stimata, su cui
@@ -57,8 +59,9 @@ cMedia=abs(cMedia);
 
 % A partire dalla cross-correlazione stimata, creo una maschera
 % selezionando tutti i valori inferiori a 0.2 e la visualizzo
-mask = cMedia<prctile(cMedia,25,'all');
-hold on;subplot(221), imagesc(mask)
+mask = cMedia<prctile(cMedia,30,'all');
+
+subplot(2,3,4), imagesc(mask)
 title ('Maschera 1')
 
 % Creo come elemento strutturale un disco con raggio = 3, da utilizzare poi per eseguire
@@ -71,10 +74,9 @@ title ('Maschera 1')
 % Morphological opening is useful for removing small objects from an image
 % while preserving the shape and size of larger objects in the image.
 
-se = strel('disk',1,0);
+se = strel('disk',3,0);
 mask2 = imopen(mask,se);
-hold on;
-subplot(222), imagesc(mask2);
+subplot(2,3,5), imagesc(mask2);
 title ('Maschera 2 dopo operazione morfologica')
 
 % Modifico l'immagine di partenza A in modo che abbia dimensioni uguali alla
@@ -89,7 +91,9 @@ A1(mask2)=255;
 
 % Visualizzo a lato immagine A e immagine con il difetto evidenziato in rosso
 Af = cat(3,A1,A,A);
-hold on;
-subplot(331);
+subplot(2,3,6);
 imshowpair(A,Af,'montage')
 title ('Immagine e Difetto finale')
+
+end
+
