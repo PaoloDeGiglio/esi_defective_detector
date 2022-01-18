@@ -35,15 +35,11 @@ imagesc(H1img)
 title('Horizontal Detail Coef. of Level 1')
 
 subplot(2,2,3)
-imagesc(V1img)
+imagesc((V1img))
 title('Vertical Detail Coef. of Level 1')
 
 subplot(2,2,4)
 imagesc(D1img)
 title('Diagonal Detail Coef. of Level 1')
 
-level = graythresh(A1img);
 
-BW = imbinarize(A1img, level);
-figure(3);
-imshowpair(A1img, BW, 'montage')
