@@ -1,17 +1,18 @@
-function main(ORIG,arg2,numberFigure)
+function mask2 = main(ORIG,arg2,numberFigure)
 %% Esercizio 2 - Cross-correlazione 2D normalizzata per trovare difetti su tessuti
 
 % Carico immagine e la converto in scala di grigi
 
-A = ORIG;
-A = highpassfilter(ORIG, 40);
+A = histeq(ORIG);
+
+A = medfilt2(A);
 
 [M,N] = size(A);
 R= 15;
 C = 15;
 
-[pattern,dimPattern]=patternordered(ORIG,R,C)
-%[pattern,dimPattern]=patternrandom(ORIG,R,C,arg2)
+%[pattern,dimPattern]=patternordered(ORIG,R,C)
+[pattern,dimPattern]=patternrandom(ORIG,R,C,arg2)
 
 % Visualizzo i pattern sovrapposti all'immagine di partenza (convertita in
 % scala di grigi)
@@ -57,7 +58,7 @@ cMedia=abs(cMedia);
 
 % A partire dalla cross-correlazione stimata, creo una maschera
 % selezionando tutti i valori inferiori a 0.2 e la visualizzo
-mask = cMedia<prctile(cMedia,30,'all');
+mask = cMedia<prctile(cMedia,50,'all');
 
 subplot(2,3,4), imagesc(mask)
 title ('Maschera 1')
@@ -72,7 +73,7 @@ title ('Maschera 1')
 % Morphological opening is useful for removing small objects from an image
 % while preserving the shape and size of larger objects in the image.
 
-se = strel('disk',3,0);
+se = strel('disk',1,0);
 mask2 = imopen(mask,se);
 subplot(2,3,5), imagesc(mask2);
 title ('Maschera 2 dopo operazione morfologica')
@@ -85,7 +86,6 @@ A = A(ceil(R/2):end-floor(R/2),ceil(C/2):end-floor(C/2)); %499x499
 % mask2 devono essere messi a 255 in A1
 A1 = A;
 A1(mask2)=255;
-
 
 % Visualizzo a lato immagine A e immagine con il difetto evidenziato in rosso
 Af = cat(3,A1,A,A);
