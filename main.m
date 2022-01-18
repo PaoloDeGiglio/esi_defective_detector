@@ -1,19 +1,17 @@
 function main(ORIG,arg2,numberFigure)
 %% Esercizio 2 - Cross-correlazione 2D normalizzata per trovare difetti su tessuti
 
-
 % Carico immagine e la converto in scala di grigi
 
-A=ORIG;
+A = ORIG;
 A = highpassfilter(ORIG, 40);
-
 
 [M,N] = size(A);
 R= 15;
 C = 15;
 
-%[pattern,dimPattern]=patternordered(ORIG,R,C)
-[pattern,dimPattern]=patternrandom(ORIG,R,C,arg2)
+[pattern,dimPattern]=patternordered(ORIG,R,C)
+%[pattern,dimPattern]=patternrandom(ORIG,R,C,arg2)
 
 % Visualizzo i pattern sovrapposti all'immagine di partenza (convertita in
 % scala di grigi)
