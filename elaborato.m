@@ -1,14 +1,42 @@
+%% PULIZIA BUFFER
 clear all
 close all
 clc
-img = rgb2gray(imread('images/img-22.jpg'));
+%% SELEZIONE IMMAGINE
+% ---- Dove sono tutte le immagini da testare
+path_directory='images'; % 'Folder name'
+original_files=dir([path_directory '/*.jpg']); 
+
+% ---- Impostazioni per utente
+user_choice=input('-[rand] -> seleziona randomicamente un campione\n-[altro] -> selezione immagine specificata;\nScrivi qui: ','s');
+
+if(strcmp(user_choice, "rand"))
+filename=[path_directory '/' original_files(randi(length(original_files))).name];
+img = rgb2gray(imread(filename));
+else 
+[file,path] = uigetfile({'*.jpg'}, 'Seleziona una foto',['images']);
+img = rgb2gray(imread(strcat(path,file)));
+end
+%% STAMPA IMMAGINE DI PARTENZA
+
 figure(1);
 imagesc(img); axis image; colormap gray; title("IMMAGINE DI PARTENZA");hold on;
 
+%% SELEZIONE DIMENSIONE PATTERN
+
+%% SELEZIONE PATTERN SECONDO I VARI APPROCCI
+
+%% CROSSCORRELAZIONE MASCHERE
+
+%% EROSIONE MORFOLOGICA MASCHERE
+
+%% STAMPA RISULTATI
+
+%% MASCHERA MEDIA E RISULTATO MEDIO
 count=1;
 for NoP=1:5   %in questo ciclo aumento il numero di campioni da prendere 
-      for radius=1:5 %aumento il raggio x operazione morfologica
-          for prC=1:5 %aumento percentile 
+      for radius=1:3 %aumento il raggio x operazione morfologica
+          for prC=1:10 %aumento percentile 
                mask{count}=fMask(img,NoP*10,15,15,radius,prC*10,i);
                count=count+1;
           end
@@ -63,4 +91,7 @@ Af = cat(3,A1,A,A);
 figure;
 imshowpair(A,Af,'montage')
 title ('Immagine e Difetto finale')
+
+%% RISULTATO OTTIMALE
+
 
