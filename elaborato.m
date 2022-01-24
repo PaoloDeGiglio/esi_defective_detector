@@ -24,6 +24,8 @@ imagesc(img); axis image; colormap gray; title("IMMAGINE DI PARTENZA");hold on;
 
 %% SELEZIONE DIMENSIONE PATTERN
 
+kernel_size = kernel_size(img);
+
 %% SELEZIONE PATTERN SECONDO I VARI APPROCCI
 
 %% CROSSCORRELAZIONE MASCHERE
