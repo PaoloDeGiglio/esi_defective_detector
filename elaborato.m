@@ -5,7 +5,7 @@ img = rgb2gray(imread('images/img-22.jpg'));
 figure(1);
 imagesc(img); axis image; colormap gray; title("IMMAGINE DI PARTENZA");hold on;
 
- count=1;
+count=1;
 for NoP=1:5   %in questo ciclo aumento il numero di campioni da prendere 
       for radius=1:5 %aumento il raggio x operazione morfologica
           for prC=1:5 %aumento percentile 
