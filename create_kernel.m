@@ -4,9 +4,7 @@
 %alt: create_kernel(IMG,'random','vertex',12)
 % create_kernel(IMG,'standard','-',12)
 % create_kernel(IMG,'random','all',12)
-function [kernel] = create_kernel(IMG,mode,position,kernel_dim)
-    %fisso il numero di kernel
-    num_kernels=12;
+function [kernel] = create_kernel(IMG,mode,position,kernel_dim,num_kernels)
     %calcolo dimensioni immagine 
     [IMG_x, IMG_y]=size(IMG);
    
@@ -110,14 +108,4 @@ function [kernel] = create_kernel(IMG,mode,position,kernel_dim)
           
         end
     end
-    
-    %visualizzo i kernel 
-    subplot(231); 
-    imagesc(IMG); axis image; colormap gray; hold on;
-    for j=1:num_kernels
-        rectangle('position',[kernel{j}.basex,kernel{j}.basey,kernel{j}.dim,kernel{j}.dim],'EdgeColor','r');  
-    end
-    hold off;
-    
-
 end
