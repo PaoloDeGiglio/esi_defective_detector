@@ -21,5 +21,6 @@ stats = graycoprops(glcms, 'Correlation');
 %ylabel('Correlation')
 
 [val,~] = findpeaks(stats.Correlation);
-[value,size]= max(val);
+size = round(length(val)/2);
+
 
