@@ -20,7 +20,7 @@ end
 %% STAMPA IMMAGINE DI PARTENZA
 
 figure(1);
-subplot(411);
+%subplot(411);
 imagesc(img); axis image; colormap gray; title("IMMAGINE DI PARTENZA");hold on;
 
 %% SELEZIONE DIMENSIONE PATTERN
@@ -47,27 +47,27 @@ hold off;
 
 %% CROSSCORRELAZIONE MASCHERE
 
-mask_standard = create_mask(img,kernel_standard, num_kernels, kernel_size);
-mask_rand_all = create_mask(img,kernel_rand_all, num_kernels, kernel_size);
-mask_rand_vertex = create_mask(img,kernel_rand_vertex, num_kernels, kernel_size);
+[mask_standard cMediaS]= create_mask(img,kernel_standard, num_kernels, kernel_size);
+[mask_rand_all cMediaR] = create_mask(img,kernel_rand_all, num_kernels, kernel_size);
+[mask_rand_vertex cMediaRV] = create_mask(img,kernel_rand_vertex, num_kernels, kernel_size);
 
 %% EROSIONE MORFOLOGICA E PERCENTILE MASCHERE
 
-mask_standard_opt = mask_optimization(mask_standard);
-mask_rand_all_opt = mask_optimization(mask_rand_all);
-mask_rand_vertex_opt = mask_optimization(mask_rand_vertex);
+mask_standard_opt = mask_optimization(mask_standard, cMediaS);
+mask_rand_all_opt = mask_optimization(mask_rand_all, cMediaR);
+mask_rand_vertex_opt = mask_optimization(mask_rand_vertex, cMediaRV);
 
 %% STAMPA RISULTATI
 
 subplot(423);
 imagesc(mask_standard_opt);title ('Maschera standard finale ');
-show_defects(img,mask_standard_opt,424)
+show_defects(img,mask_standard_opt,kernel_size,424)
 subplot(425);
 imagesc(mask_rand_all_opt);title ('Maschera randomica generica finale ');
-show_defects(img,mask_standard_opt,426)
+show_defects(img,mask_rand_all_opt,kernel_size,426)
 subplot(427);
-imagesc(mask_rand_all_opt);title ('Maschera randomica vertitici finale ');
-show_defects(img,mask_standard_opt,428)
+imagesc(mask_rand_vertex_opt);title ('Maschera randomica vertitici finale ');
+show_defects(img,mask_rand_vertex_opt,kernel_size,428)
 
 
 %% MASCHERA MEDIA E RISULTATO MEDIO
