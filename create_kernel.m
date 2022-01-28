@@ -10,31 +10,35 @@ function [kernel] = create_kernel(IMG,mode,position,kernel_dim,num_kernels)
    
     % mode standard su tutta l'immagine (metto 12 quadratini a vertici)
     if(strcmp(mode,'standard'))
-        for i=1:(num_kernels)
-            if(i<=3) %alto a sx
-             kernel{i}.img=IMG(i:kernel_dim+i-1,i:kernel_dim+i-1)
-             kernel{i}.basex=i;
-             kernel{i}.basey=i;
-            end
-            if(i>3 && i<=6) %alto a dx
-             kernel{i}.img = IMG(IMG_x-kernel_dim-i+1:IMG_x-i,i:kernel_dim+i-1);
-             kernel{i}.basex=IMG_x-kernel_dim-i+1;
-             kernel{i}.basey=i;
-            end
-            if(i>6 && i<=9) %basso dx
-              kernel{i}.img = IMG(IMG_x-kernel_dim-i+1:IMG_x-i,IMG_y-kernel_dim-i+1:IMG_y-i);
-              kernel{i}.basex=IMG_x-kernel_dim-i;
-              kernel{i}.basey=IMG_y-kernel_dim-i;
-            end
-            if(i>9 && i<=12)   %basso sx
-             kernel{i}.img = IMG(i-9:kernel_dim+i-10,IMG_y-kernel_dim-i+1:IMG_y-i);
-             kernel{i}.basex=i-9;
-             kernel{i}.basey=IMG_y-kernel_dim-i;
-             
-            end
-             kernel{i}.dim=kernel_dim;
-                
+        
+        for i=1:3
+         kernel{i}.img=find_subMat(IMG,i,i,kernel_dim);
+         kernel{i}.basex=i;
+         kernel{i}.basey=i;
+         kernel{i}.dim=kernel_dim;
         end
+        
+        for i=1:3
+         kernel{3+i}.img=find_subMat(IMG,i,IMG_y-kernel_dim-i+1,kernel_dim);
+         kernel{3+i}.basex=i;
+         kernel{3+i}.basey=IMG_y-kernel_dim-i+1;
+         kernel{3+i}.dim=kernel_dim;
+        end
+        
+        for i=1:3
+         kernel{6+i}.img=find_subMat(IMG,IMG_x-kernel_dim-i+1,i,kernel_dim);
+         kernel{6+i}.basex=IMG_x-kernel_dim-i+1;
+         kernel{6+i}.basey=i;
+         kernel{6+i}.dim=kernel_dim;
+        end
+        
+        for i=1:3
+         kernel{9+i}.img=find_subMat(IMG,IMG_x-kernel_dim-i+1,IMG_y-kernel_dim-i+1,kernel_dim);
+         kernel{9+i}.basex=IMG_x-kernel_dim-i+1;
+         kernel{9+i}.basey=IMG_y-kernel_dim-i+1;
+         kernel{9+i}.dim=kernel_dim;
+        end
+              
     end
     
     % mode random su tutta l'immagine

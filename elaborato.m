@@ -47,15 +47,15 @@ hold off;
 
 %% CROSSCORRELAZIONE MASCHERE
 
-[mask_standard cMediaS]= create_mask(img,kernel_standard, num_kernels, kernel_size);
-[mask_rand_all cMediaR] = create_mask(img,kernel_rand_all, num_kernels, kernel_size);
-[mask_rand_vertex cMediaRV] = create_mask(img,kernel_rand_vertex, num_kernels, kernel_size);
+[mask_standard]= create_mask(img,kernel_standard, num_kernels, kernel_size);
+[mask_rand_all] = create_mask(img,kernel_rand_all, num_kernels, kernel_size);
+[mask_rand_vertex] = create_mask(img,kernel_rand_vertex, num_kernels, kernel_size);
 
 %% EROSIONE MORFOLOGICA E PERCENTILE MASCHERE
 
-mask_standard_opt = mask_optimization(mask_standard, cMediaS);
-mask_rand_all_opt = mask_optimization(mask_rand_all, cMediaR);
-mask_rand_vertex_opt = mask_optimization(mask_rand_vertex, cMediaRV);
+mask_standard_opt = mask_optimization(mask_standard);
+mask_rand_all_opt = mask_optimization(mask_rand_all);
+mask_rand_vertex_opt = mask_optimization(mask_rand_vertex);
 
 %% STAMPA RISULTATI
 

@@ -1,4 +1,4 @@
-function [mask crossCorrelationMean] = create_mask(img,pattern,num_patterns, kernel_size)
+function [crossCorrelationMean] = create_mask(img,pattern,num_patterns, kernel_size)
 [M,N] = size(img);
 R=kernel_size;
 C=kernel_size;
@@ -18,7 +18,7 @@ crossCorrelationMean=sumC/num_patterns;
 
 crossCorrelationMean = crossCorrelationMean(R:end-R+1,C:end-C+1);
 
-mask=abs(crossCorrelationMean);
+crossCorrelationMean=abs(crossCorrelationMean);
 
 end
 
