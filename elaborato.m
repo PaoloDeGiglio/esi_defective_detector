@@ -31,8 +31,10 @@ kernel_size = 12;
 %% SELEZIONE PATTERN SECONDO I VARI APPROCCI
 
 kernel_standard = create_kernel(img,'standard','all',kernel_size,num_kernels);
-kernel_rand_all = create_kernel(img,'random','all',kernel_size,num_kernels);
-kernel_rand_vertex = create_kernel(img,'random','vertex',kernel_size,num_kernels);
+for i=1:25
+kernel_rand_all{i} = create_kernel(img,'random','all',kernel_size,num_kernels);
+kernel_rand_vertex{i} = create_kernel(img,'random','vertex',kernel_size,num_kernels);
+end
 kernel_crop=imcrop(img);    %selezione manuale kernel
 %visualizzo i kernel 
 figure;
@@ -40,25 +42,42 @@ title('Kernel in base alle varie impostazioni');
 imagesc(img); axis image; colormap gray;title('Kernel in base alle varie impostazioni'); hold on;
 for j=1:num_kernels
     rectangle('position',[kernel_standard{j}.basex,kernel_standard{j}.basey,kernel_standard{j}.dim,kernel_standard{j}.dim],'EdgeColor','r');
-    rectangle('position',[kernel_rand_all{j}.basex,kernel_rand_all{j}.basey,kernel_rand_all{j}.dim,kernel_rand_all{j}.dim],'EdgeColor','g');
-    rectangle('position',[kernel_rand_vertex{j}.basex,kernel_rand_vertex{j}.basey,kernel_rand_vertex{j}.dim,kernel_rand_vertex{j}.dim],'EdgeColor','b');
+    %rectangle('position',[kernel_rand_all{j}.basex,kernel_rand_all{j}.basey,kernel_rand_all{j}.dim,kernel_rand_all{j}.dim],'EdgeColor','g');
+    %rectangle('position',[kernel_rand_vertex{j}.basex,kernel_rand_vertex{j}.basey,kernel_rand_vertex{j}.dim,kernel_rand_vertex{j}.dim],'EdgeColor','b');
 end
 hold off;
 
 %% CROSSCORRELAZIONE MASCHERE
 
 c_mask_standard= create_mask(img,kernel_standard, num_kernels, kernel_size,'');
-c_mask_rand_all = create_mask(img,kernel_rand_all, num_kernels, kernel_size,'');
-c_mask_rand_vertex = create_mask(img,kernel_rand_vertex, num_kernels, kernel_size,'');
+for i=1:25
+c_mask_rand_all{i} = create_mask(img,kernel_rand_all{i}, num_kernels, kernel_size,'');
+c_mask_rand_vertex{i} = create_mask(img,kernel_rand_vertex{i}, num_kernels, kernel_size,'');
+end
 c_mask_crop=create_mask(img,kernel_crop, 1, size(kernel_crop),'crop');
 
 %% EROSIONE MORFOLOGICA E PERCENTILE MASCHERE
 
 mask_standard_opt = mask_optimization(c_mask_standard);
-mask_rand_all_opt = mask_optimization(c_mask_rand_all);
-mask_rand_vertex_opt = mask_optimization(c_mask_rand_vertex);
+for i=1:25
+mask_rand_all_opt{i} = mask_optimization(c_mask_rand_all{i});
+mask_rand_vertex_opt{i} = mask_optimization(c_mask_rand_vertex{i});
+end
 mask_crop_opt=mask_optimization(c_mask_crop);
 %% STAMPA RISULTATI
+
+% Calcolo la mediana delle maschere
+median_mask_rand_vertex_opt=mask_rand_vertex_opt{1};
+median_mask_rand_all_opt=mask_rand_all_opt{1};
+for i=2:25
+median_mask_rand_vertex_opt = cat(3,median_mask_rand_vertex_opt,mask_rand_vertex_opt{i});
+median_mask_rand_all_opt = cat(3,median_mask_rand_all_opt,mask_rand_all_opt{i});
+end
+median_mask_rand_vertex_opt=median(median_mask_rand_vertex_opt,3);
+median_mask_rand_all_opt=median(median_mask_rand_all_opt,3);
+mask_rand_vertex_opt=median_mask_rand_vertex_opt;
+mask_rand_all_opt=median_mask_rand_all_opt;
+%
 hold on ;
 figure;
 subplot(421);
@@ -133,6 +152,15 @@ hold off;
 %figure;
 %imshowpair(A,Af,'montage')
 %title ('Immagine e Difetto finale')
+
+%% TEST MARCO
+% seleziono la maschera migliore tra quelle risultanti
+
+%M = cat(3,mask_standard_opt,mask_rand_all_opt,mask_rand_vertex_opt);
+%M=median(M,3);
+%figure;
+%imagesc(M);title ('Maschera mediana ');
+%show_defects(img,M,size(kernel_crop),111,'');
 
 %% RISULTATO OTTIMALE
 
