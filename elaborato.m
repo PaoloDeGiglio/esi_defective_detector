@@ -18,7 +18,6 @@ else
 img = rgb2gray(imread(strcat(path,file)));
 end
 %% STAMPA IMMAGINE DI PARTENZA
-
 figure(1);
 imagesc(img); axis image; colormap gray; title("IMMAGINE DI PARTENZA - Seleziona il kernel");hold on;
 
@@ -93,75 +92,20 @@ subplot(427);
 imagesc(mask_crop_opt);title ('Maschera con kernel scelto manualmente ');
 show_defects(img,mask_crop_opt,size(kernel_crop),428,'crop')
 hold off;
-%% MASCHERA MEDIA E RISULTATO MEDIO
-% count=1;
-% for NoP=1:5   %in questo ciclo aumento il numero di campioni da prendere 
-%       for radius=1:3 %aumento il raggio x operazione morfologica
-%           for prC=1:10 %aumento percentile 
-%                mask{count}=fMask(img,NoP*10,15,15,radius,prC*10,i);
-%                count=count+1;
-%           end
-%       end   
-% end
-% 
-% [R C]=size(mask{1});
-% maskfinal=zeros(R,C);
-% 
-% %sommo tutte le matrici insieme
-% for i=1:length(mask)
-%     maskfinal=maskfinal+mask{i};
-% end
-% 
-% 
-% %conto il numero valori >1 nella matrice
-% notZero=0;
-% for i=1:R
-%     for j=1:C
-%         if(maskfinal(i,j)>1)
-%             notZero=notZero+1;
-%         end
-%     end
-% end
-% 
-% %valore medio del pixel
-% media=sum(maskfinal,'all')/notZero;
-% 
-% %setto pixel in base alla media
-% maskfinal(maskfinal < media) = 0;
-% maskfinal(maskfinal >= media) = 1;
-% figure(6);
-% 
-% imagesc(maskfinal);
-% title ('Maschera finale ')
-% 
-% A=img;
-% R= 15;
-% C = 15;
-% 
-% % Modifico l'immagine di partenza A in modo che abbia dimensioni uguali alla
-% % cross-correlazione
-% A = A(ceil(R/2):end-floor(R/2),ceil(C/2):end-floor(C/2)); %499x499
-
-% Creo una nuova immagine A1, uguale ad A. I pixel che sono pari a 1 nella variabile
-% mask2 devono essere messi a 255 in A1
-%A1 = img;
-%A1(maskfinal==1)=255;
-
-% Visualizzo a lato immagine A e immagine con il difetto evidenziato in rosso
-%Af = cat(3,A1,A,A);
-%figure;
-%imshowpair(A,Af,'montage')
-%title ('Immagine e Difetto finale')
 
 %% TEST MARCO
 % seleziono la maschera migliore tra quelle risultanti
 
-%M = cat(3,mask_standard_opt,mask_rand_all_opt,mask_rand_vertex_opt);
-%M=median(M,3);
-%figure;
-%imagesc(M);title ('Maschera mediana ');
-%show_defects(img,M,size(kernel_crop),111,'');
+%[topology_ms, selected_ratio_ms] = is_reliable(mask_standard_opt,img);
+%[topology_ra, selected_ratio_ra] = is_reliable(mask_rand_all_opt,img);
+%[topology_rv, selected_ratio_rv] = is_reliable(mask_rand_vertex_opt,img);
+%[topology_crop, selected_ratio_crop] = is_reliable(mask_crop_opt,img);
 
-%% RISULTATO OTTIMALE
+
+median_final= cat(3,mask_standard_opt,mask_rand_all_opt,mask_rand_vertex_opt,imresize(mask_crop_opt,size(mask_rand_vertex_opt)));
+median_final=median(median_final,3);
+figure();
+imagesc(median_final);title ('Maschera finale ');
+show_defects(img,median_final,kernel_size,111,'')
 
 
