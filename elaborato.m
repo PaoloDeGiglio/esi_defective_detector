@@ -1,7 +1,7 @@
 %% PULIZIA BUFFER
 clear all
 close all
-clc
+%clc
 %% SELEZIONE IMMAGINE
 % ---- Dove sono tutte le immagini da testare
 path_directory='images'; % 'Folder name'
@@ -141,8 +141,7 @@ end
 end
 median_final=median(median_final,3);
 
-figure();
+figure(4);
 imagesc(median_final);title ('Maschera finale ');
 show_defects(img,median_final,kernel_size,111,'')
-
 
