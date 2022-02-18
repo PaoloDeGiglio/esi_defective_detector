@@ -78,8 +78,8 @@ mean_mask_rand_all_opt=sum(sum_mask_rand_all_opt,'all')/number_iteration;
 mean_mask_rand_vertex_opt=sum(sum_mask_rand_vertex_opt,'all')/number_iteration;
 
 %elimino maschere sbagliate
-mask_rand_vertex_opt=cleanSomeMask(mask_rand_vertex_opt,mean_mask_rand_vertex_opt,number_iteration);
-mask_rand_all_opt=cleanSomeMask(mask_rand_all_opt,mean_mask_rand_all_opt,number_iteration);
+mask_rand_vertex_opt=cleanSomeMask(mask_rand_vertex_opt,mean_mask_rand_vertex_opt,number_iteration,1);
+mask_rand_all_opt=cleanSomeMask(mask_rand_all_opt,mean_mask_rand_all_opt,number_iteration,1);
 
 %% STAMPA RISULTATI
 
@@ -131,18 +131,16 @@ end
 mean_final=sum(sum_final,'all')/numel(final);
 
 %elimino maschere sbagliate
-final=cleanSomeMask(final,mean_final,numel(final));
+final=cleanSomeMask(final,mean_final,numel(final),2);
 
-
-median_final=final{1};
-if(numel(final)>1)
-for i=2:numel(final)
-    median_final=cat(3,median_final,final{i});
-end
-end
-median_final=median(median_final,3);
+%median_final=final{1};
+%if(numel(final)>1)
+%for i=2:numel(final)
+%    median_final=cat(3,median_final,final{i});
+%end
+%end
 
 figure(4);
-imagesc(median_final);title ('Maschera finale ');
-show_defects(img,median_final,kernel_size,111,'')
+imagesc(final);title ('Maschera finale ');
+show_defects(img,final,kernel_size,111,'')
 
