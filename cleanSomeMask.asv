@@ -1,0 +1,9 @@
+function [newMask] cleanSomeMask(mask, mean,number_of_mask)
+
+for i=1:number_of_mask
+    s=sum(mask{i},'all');
+    if(s>mean/2 && s<mean*2)  %le maschere valide devono stare
+        
+end
+
+end
