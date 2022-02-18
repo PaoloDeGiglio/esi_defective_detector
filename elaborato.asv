@@ -117,14 +117,30 @@ hold off;
 
 %% TEST MARCO
 % seleziono la maschera migliore tra quelle risultanti
-final= cat(3,mask_standard_opt,mask_rand_all_opt,mask_rand_vertex_opt,imresize(mask_crop_opt,size(mask_rand_vertex_opt)));
-
 final{1}=mask_standard_opt;
 final{2}=mask_rand_all_opt;
 final{3}=mask_rand_vertex_opt;
-final{4}=
-median_final=cleanSomeMask(mean_final,4);
+final{4}=imresize(mask_crop_opt,size(mask_rand_vertex_opt));
+
+for i=1:numel(final)
+    sum_final(i)=sum(final{i},'all');
+end
+
+%quanti pixel ha mediamente la maschera
+mean_final=sum(sum_final,'all')/numel(final);
+
+%elimino maschere sbagliate
+final=cleanSomeMask(final,mean_final,numel(final));
+
+
+median_final=final{1};
+if(numel(final)>1)
+for i=2:numel(final)
+    median_final=cat(3,median_final,final{i});
+end
+end
 median_final=median(median_final,3);
+
 
 figure();
 imagesc(median_final);title ('Maschera finale ');

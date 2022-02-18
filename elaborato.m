@@ -132,11 +132,15 @@ mean_final=sum(sum_final,'all')/numel(final);
 %elimino maschere sbagliate
 final=cleanSomeMask(final,mean_final,numel(final));
 
+
 median_final=final{1};
+if(numel(final)>1)
 for i=2:numel(final)
     median_final=cat(3,median_final,final{i});
 end
+end
 median_final=median(median_final,3);
+
 figure();
 imagesc(median_final);title ('Maschera finale ');
 show_defects(img,median_final,kernel_size,111,'')

@@ -8,4 +8,13 @@ for i=1:number_of_mask
         j=j+1;
     end       
 end
+
+if(j==1) %l'approccio non ha trovato maschere, restituisco come risulato l'unione di quelli che hanno puntini
+    newMask=mask{1};
+    for i=2:number_of_mask
+        newMask=newMask+mask{i};
+    end
+    newMask=newMask~=0;
+end
+    
 end
