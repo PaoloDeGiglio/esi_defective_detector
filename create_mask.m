@@ -17,8 +17,8 @@ crossCorrelationMean=sumC/num_patterns;
 crossCorrelationMean = crossCorrelationMean(R:end-R+1,C:end-C+1);
 crossCorrelationMean=abs(crossCorrelationMean);
 else 
-    R=kernel_size(1,1);
-    C=kernel_size(1,2);
+    R=kernel_size;
+    C=R;
     crossCorrelationMean=normxcorr2(pattern,img); %in questo caso ho un solo pattern
     crossCorrelationMean = crossCorrelationMean(R:end-R+1,C:end-C+1);
     crossCorrelationMean=abs(crossCorrelationMean);

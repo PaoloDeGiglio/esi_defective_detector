@@ -1,7 +1,7 @@
 %% PULIZIA BUFFER
 clear all
 close all
-%clc
+clc
 %% SELEZIONE IMMAGINE
 % ---- Dove sono tutte le immagini da testare
 path_directory='images'; % 'Folder name'
@@ -35,18 +35,20 @@ kernel_rand_all{i} = create_kernel(img,'random','all',kernel_size,num_kernels);
 kernel_rand_vertex{i} = create_kernel(img,'random','vertex',kernel_size,num_kernels);
 end
 kernel_crop=imcrop(img);    %selezione manuale kernel
+%metto le dimensioni secondo standard
+kernel_crop=imresize(kernel_crop,[kernel_size kernel_size]);
 %visualizzo i kernel 
 figure;
 title('Kernel in base alle varie impostazioni');
 imagesc(img); axis image; colormap gray;title('Kernel in base alle varie impostazioni'); hold on;
 
 %da eliminare
-for j=1:num_kernels
-    rectangle('position',[kernel_standard{j}.basex,kernel_standard{j}.basey,kernel_standard{j}.dim,kernel_standard{j}.dim],'EdgeColor','r');
+%for j=1:num_kernels
+    %rectangle('position',[kernel_standard{j}.basex,kernel_standard{j}.basey,kernel_standard{j}.dim,kernel_standard{j}.dim],'EdgeColor','r');
     %rectangle('position',[kernel_rand_all{j}.basex,kernel_rand_all{j}.basey,kernel_rand_all{j}.dim,kernel_rand_all{j}.dim],'EdgeColor','g');
     %rectangle('position',[kernel_rand_vertex{j}.basex,kernel_rand_vertex{j}.basey,kernel_rand_vertex{j}.dim,kernel_rand_vertex{j}.dim],'EdgeColor','b');
-end
-hold off;
+%end
+%hold off;
 
 %% CROSSCORRELAZIONE MASCHERE
 
@@ -55,7 +57,7 @@ for i=1:number_iteration
  c_mask_rand_all{i} = create_mask(img,kernel_rand_all{i}, num_kernels, kernel_size,'');
  c_mask_rand_vertex{i} = create_mask(img,kernel_rand_vertex{i}, num_kernels, kernel_size,'');
 end
-c_mask_crop=create_mask(img,kernel_crop, 1, size(kernel_crop),'crop');
+c_mask_crop=create_mask(img,kernel_crop, 1, kernel_size,'crop');
 
 %% EROSIONE MORFOLOGICA E PERCENTILE MASCHERE
 
@@ -81,7 +83,7 @@ mask_rand_all_opt=cleanSomeMask(mask_rand_all_opt,mean_mask_rand_all_opt,number_
 
 %% STAMPA RISULTATI
 
-% Calcolo la mediana delle maschere
+% Calcolo la mediana delle maschere randomiche
 median_mask_rand_vertex_opt=mask_rand_vertex_opt{1};
 median_mask_rand_all_opt=mask_rand_all_opt{1};
 for i=2:numel(mask_rand_vertex_opt)
@@ -115,12 +117,11 @@ imagesc(mask_crop_opt);title ('Maschera con kernel scelto manualmente ');
 show_defects(img,mask_crop_opt,size(kernel_crop),428,'crop')
 hold off;
 
-%% TEST MARCO
-% seleziono la maschera migliore tra quelle risultanti
+%% seleziono la maschera migliore tra quelle risultanti
 final{1}=mask_standard_opt;
 final{2}=mask_rand_all_opt;
 final{3}=mask_rand_vertex_opt;
-final{4}=imresize(mask_crop_opt,size(mask_rand_vertex_opt));
+final{4}=mask_crop_opt;
 
 for i=1:numel(final)
     sum_final(i)=sum(final{i},'all');
