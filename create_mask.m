@@ -1,3 +1,4 @@
+% crea la maschera correlazione con il kernel
 function [crossCorrelationMean] = create_mask(img,pattern,num_patterns, kernel_size,type)
 [M,N] = size(img);
 

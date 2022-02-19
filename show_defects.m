@@ -1,3 +1,4 @@
+%visualizzo i difetti sovrapposti all'immagine originale
 function show_defects(img,mask,kernel_size,subplotplace,type,string)
 A=img;
 if(not(strcmp(type,'crop')))

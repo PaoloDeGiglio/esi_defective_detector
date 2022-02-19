@@ -1,3 +1,4 @@
+% genera il numero mediana di componenti connesse di un tot di maschere
 function [value] = numBlobsMedian(mask,number_of_mask)
   res=0;
     for i=1:number_of_mask

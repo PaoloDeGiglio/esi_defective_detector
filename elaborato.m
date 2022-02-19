@@ -36,7 +36,7 @@ kernel_rand_vertex{i} = create_kernel(img,'random','vertex',kernel_size,num_kern
 end
 kernel_crop=imcrop(img);    %selezione manuale kernel
 %metto le dimensioni secondo standard
-kernel_crop=imresize(kernel_crop,[kernel_size kernel_size]);
+kernel_crop=kernel_crop(1:kernel_size,1:kernel_size);
 
 %% CROSSCORRELAZIONE MASCHERE
 
