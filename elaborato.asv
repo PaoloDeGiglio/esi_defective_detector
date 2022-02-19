@@ -37,6 +37,18 @@ end
 kernel_crop=imcrop(img);    %selezione manuale kernel
 %metto le dimensioni secondo standard
 kernel_crop=imresize(kernel_crop,[kernel_size kernel_size]);
+%visualizzo i kernel 
+figure;
+title('Kernel in base alle varie impostazioni');
+imagesc(img); axis image; colormap gray;title('Kernel in base alle varie impostazioni'); hold on;
+
+%da eliminare
+%for j=1:num_kernels
+    %rectangle('position',[kernel_standard{j}.basex,kernel_standard{j}.basey,kernel_standard{j}.dim,kernel_standard{j}.dim],'EdgeColor','r');
+    %rectangle('position',[kernel_rand_all{j}.basex,kernel_rand_all{j}.basey,kernel_rand_all{j}.dim,kernel_rand_all{j}.dim],'EdgeColor','g');
+    %rectangle('position',[kernel_rand_vertex{j}.basex,kernel_rand_vertex{j}.basey,kernel_rand_vertex{j}.dim,kernel_rand_vertex{j}.dim],'EdgeColor','b');
+%end
+%hold off;
 
 %% CROSSCORRELAZIONE MASCHERE
 
@@ -50,7 +62,6 @@ c_mask_crop=create_mask(img,kernel_crop, 1, kernel_size,'crop');
 %% EROSIONE MORFOLOGICA E PERCENTILE MASCHERE
 
 mask_standard_opt = mask_optimization(c_mask_standard);
-% per robustezza genero più maschere random
 for i=1:number_iteration
 mask_rand_all_opt{i} = mask_optimization(c_mask_rand_all{i});
 mask_rand_vertex_opt{i} = mask_optimization(c_mask_rand_vertex{i});
@@ -62,8 +73,9 @@ mask_crop_opt=mask_optimization(c_mask_crop);
 mask_rand_vertex_opt=deleteWrongMask(mask_rand_vertex_opt,number_iteration);
 mask_rand_all_opt=deleteWrongMask(mask_rand_all_opt,number_iteration);
 
-%% Calcolo la mediana delle maschere randomiche
+%% STAMPA RISULTATI
 
+% Calcolo la mediana delle maschere randomiche
 median_mask_rand_vertex_opt=mask_rand_vertex_opt{1};
 median_mask_rand_all_opt=mask_rand_all_opt{1};
 for i=2:numel(mask_rand_vertex_opt)
@@ -81,35 +93,34 @@ median_mask_rand_all_opt=median(median_mask_rand_all_opt,3);
 mask_rand_vertex_opt=median_mask_rand_vertex_opt;
 mask_rand_all_opt=median_mask_rand_all_opt;
 
-%% Visualizzo figure
 hold on ;
 figure;
 subplot(421);
 imagesc(mask_standard_opt);title ('Maschera standard finale ');
-show_defects(img,mask_standard_opt,kernel_size,422,'','Standard')
+show_defects(img,mask_standard_opt,kernel_size,422,'')
 subplot(423);
 imagesc(mask_rand_all_opt);title ('Maschera randomica generica finale ');
-show_defects(img,mask_rand_all_opt,kernel_size,424,'','Random all')
+show_defects(img,mask_rand_all_opt,kernel_size,424,'')
 subplot(425);
 imagesc(mask_rand_vertex_opt);title ('Maschera randomica vertitici finale ');
-show_defects(img,mask_rand_vertex_opt,kernel_size,426,'','Random vertex')
+show_defects(img,mask_rand_vertex_opt,kernel_size,426,'')
 subplot(427);
 imagesc(mask_crop_opt);title ('Maschera con kernel scelto manualmente ');
-show_defects(img,mask_crop_opt,size(kernel_crop),428,'crop','Crop')
+show_defects(img,mask_crop_opt,size(kernel_crop),428,'crop')
 hold off;
 
-%% Seleziono la maschera migliore tra quelle risultanti
+%% seleziono la maschera migliore tra quelle risultanti
 final{1}=mask_standard_opt;
 final{2}=mask_rand_all_opt;
 final{3}=mask_rand_vertex_opt;
 final{4}=mask_crop_opt;
 
-%ottengo maschera migliore e migliore pulita
+%ottengo maschera migliore
 [final, finalCleaned]=obtainBestMask(final,4);
 
-% visualizzo
 hold on;
 figure;
-show_defects(img,final,kernel_size,121,'','Finale');
-show_defects(img,finalCleaned,kernel_size,122,'','Finale pulita');
+title ('Maschera randomica vertitici finale ');
+show_defects(img,final,kernel_size,121,'');
+show_defects(img,finalCleaned,kernel_size,122,'');
 hold off;
